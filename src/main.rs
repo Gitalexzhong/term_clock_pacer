@@ -1,3 +1,14 @@
 fn main() {
-    println!("Hello, world!");
+    println!("");
+
+    // loop {
+    println!("     ██ ██████      ██████ ██████");
+    println!("     ██     ██  ██      ██     ██");
+    println!("     ██     ██      ██████ ██████");
+    println!("     ██     ██  ██  ██         ██");
+    println!("     ██     ██      ██████ ██████");
+    // }
+
+    println!("");
+
 }
