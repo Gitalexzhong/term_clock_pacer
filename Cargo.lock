@@ -3,5 +3,14 @@
 version = 3
 
 [[package]]
+name = "grux"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "76250be2a33254814f32a6dd6520159838ca6fb10511c17798472425fe8657a5"
+
+[[package]]
 name = "term_clock_pacer"
 version = "0.1.0"
+dependencies = [
+ "grux",
+]
