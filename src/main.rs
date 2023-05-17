@@ -1,4 +1,6 @@
 use chrono::{ Local, Timelike };
+use termcolor::{StandardStream, ColorChoice};
+
 
 enum Line {
     Top,
@@ -159,10 +161,11 @@ fn display(term_clock: &[[char; 80]; 24]) {
 
     for i in 0..24 {
         for j in 0..80 {
-            print!("{}", term_clock[i][j]);
+            print!("\x1b[0;32m{}\x1b[0m", term_clock[i][j]);
         }
         println!();
     }
+
 }
 
 fn update(term_clock: &mut [[char; 80]; 24]) {
