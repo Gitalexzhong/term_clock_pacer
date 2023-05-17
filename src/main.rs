@@ -1,6 +1,4 @@
 use chrono::{ Local, Timelike };
-use termcolor::{StandardStream, ColorChoice};
-
 
 enum Line {
     Top,
@@ -165,7 +163,6 @@ fn display(term_clock: &[[char; 80]; 24]) {
         }
         println!();
     }
-
 }
 
 fn update(term_clock: &mut [[char; 80]; 24]) {
