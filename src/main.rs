@@ -1,42 +1,123 @@
-use grux::GridWriter;
+enum Line {
+    Top,
+    Middle,
+    Bottom,
+    TopLeft,
+    TopRight,
+    BottomLeft,
+    BottomRight,
+}
 
-fn add_big_number(display: &mut String, start: u32, digit: u32) {
-    match digit {
-        1 => {
-            // for row in start+4..start+5 {
-            //     for col in 1..5 {
-            //         display.set((row as usize, col), '█');
-            //     }
-            // }
-            // Error seams to do with digit being replaced (cross talk)
-            display.set((5,1), '█');
-            display.set((5,1), '█');
-            display.set((5,2), '█');
-
-
-        },
-        _ => todo!()
+fn add_number_line(display: &mut [[char; 80]; 24], start: usize, line: Line) {
+    match line {
+        Line::Top => {
+            display[1][start] = '█';
+            display[1][start + 1] = '█';
+            display[1][start + 2] = '█';
+            display[1][start + 3] = '█';
+            display[1][start + 4] = '█';
+            display[1][start + 5] = '█';
+        }
+        Line::Middle => {
+            display[3][start] = '█';
+            display[3][start + 1] = '█';
+            display[3][start + 2] = '█';
+            display[3][start + 3] = '█';
+            display[3][start + 4] = '█';
+            display[3][start + 5] = '█';
+        }
+        Line::Bottom => {
+            display[5][start] = '█';
+            display[5][start + 1] = '█';
+            display[5][start + 2] = '█';
+            display[5][start + 3] = '█';
+            display[5][start + 4] = '█';
+            display[5][start + 5] = '█';
+        }
+        Line::TopLeft => {
+            display[1][start] = '█';
+            display[2][start] = '█';
+            display[3][start] = '█';
+            display[1][start + 1] = '█';
+            display[2][start + 1] = '█';
+            display[3][start + 1] = '█';
+        }
+        Line::TopRight => {
+            display[1][start + 4] = '█';
+            display[2][start + 4] = '█';
+            display[3][start + 4] = '█';
+            display[1][start + 5] = '█';
+            display[2][start + 5] = '█';
+            display[3][start + 5] = '█';
+        }
+        Line::BottomLeft => {
+            display[3][start] = '█';
+            display[4][start] = '█';
+            display[5][start] = '█';
+            display[3][start + 1] = '█';
+            display[4][start + 1] = '█';
+            display[5][start + 1] = '█';
+        }
+        Line::BottomRight => {
+            display[3][start + 4] = '█';
+            display[4][start + 4] = '█';
+            display[5][start + 4] = '█';
+            display[3][start + 5] = '█';
+            display[4][start + 5] = '█';
+            display[5][start + 5] = '█';
+        }
     }
+}
+
+
+fn add_divider(display: &mut [[char; 80]; 24]) {
+    display[2][16] = '█';
+    display[4][16] = '█';
+    display[2][17] = '█';
+    display[4][17] = '█';
 
 }
 
-fn display(term_clock: &String) {
-    print!("{}[2J", 27 as char);
-    // print!("{esc}[2J{esc}[0;0H", esc = 27 as char);
-    // print!("\x1B[2J");
+fn add_big_number(display: &mut [[char; 80]; 24], start: usize, digit: u32) {
+    match digit {
+        1 => {
+            add_number_line(display, start, Line::TopRight);
+            add_number_line(display, start, Line::BottomRight);
+        }
+        8 => {
+            add_number_line(display, start, Line::Top);
+            add_number_line(display, start, Line::Bottom);
+            add_number_line(display, start, Line::Middle);
+            add_number_line(display, start, Line::BottomRight);
+            add_number_line(display, start, Line::TopRight);
+            add_number_line(display, start, Line::BottomLeft);
+            add_number_line(display, start, Line::TopLeft);
+        }
+        _ => todo!(),
+    }
+}
 
-    println!("{}", term_clock);
-    println!("");
+fn display(term_clock: &[[char; 80]; 24]) {
+    print!("{}[2J", 27 as char);
+
+    for i in 0..24 {
+        for j in 0..80 {
+            print!("{}", term_clock[i][j]);
+        }
+        println!();
+    }
 }
 
 fn main() {
-    let mut term_clock = String::new();
-    // term_clock.set((81,25), ' ');
+    let mut term_clock = [[' '; 80]; 24];
 
-    add_big_number(&mut term_clock, 1, 1);
+    add_big_number(&mut term_clock, 1, 8);
+    add_big_number(&mut term_clock, 8, 8);
+    add_divider(&mut term_clock);
+    add_big_number(&mut term_clock, 20, 8);
+    add_big_number(&mut term_clock, 27, 8);
+
 
     display(&term_clock);
-    // add_big_number(&mut term_clock, 8, 1);
-
-    // display(&term_clock);
+    display(&term_clock);
 }
