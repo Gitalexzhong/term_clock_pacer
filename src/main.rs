@@ -144,6 +144,7 @@ fn add_big_number(display: &mut [[char; 80]; 24], start: usize, digit: u32) {
         }
         9 => {
             add_number_line(display, start, Line::Top);
+            add_number_line(display, start, Line::Bottom);
             add_number_line(display, start, Line::Middle);
             add_number_line(display, start, Line::BottomRight);
             add_number_line(display, start, Line::TopRight);
