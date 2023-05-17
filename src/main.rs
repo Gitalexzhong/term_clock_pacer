@@ -1,4 +1,4 @@
-use chrono::{ Utc, Timelike };
+use chrono::{ Local, Timelike };
 
 enum Line {
     Top,
@@ -80,9 +80,58 @@ fn add_divider(display: &mut [[char; 80]; 24]) {
 
 fn add_big_number(display: &mut [[char; 80]; 24], start: usize, digit: u32) {
     match digit {
+        0 => {
+            add_number_line(display, start, Line::Top);
+            add_number_line(display, start, Line::Bottom);
+            add_number_line(display, start, Line::BottomRight);
+            add_number_line(display, start, Line::TopRight);
+            add_number_line(display, start, Line::BottomLeft);
+            add_number_line(display, start, Line::TopLeft);
+        }
         1 => {
             add_number_line(display, start, Line::TopRight);
             add_number_line(display, start, Line::BottomRight);
+        }
+        2 => {
+            add_number_line(display, start, Line::Top);
+            add_number_line(display, start, Line::Bottom);
+            add_number_line(display, start, Line::Middle);
+            add_number_line(display, start, Line::TopRight);
+            add_number_line(display, start, Line::BottomLeft);
+        }
+        3 => {
+            add_number_line(display, start, Line::Top);
+            add_number_line(display, start, Line::Bottom);
+            add_number_line(display, start, Line::Middle);
+            add_number_line(display, start, Line::BottomRight);
+            add_number_line(display, start, Line::TopRight);
+        }
+        4 => {
+            add_number_line(display, start, Line::Middle);
+            add_number_line(display, start, Line::BottomRight);
+            add_number_line(display, start, Line::TopRight);
+            add_number_line(display, start, Line::TopLeft);
+        }
+        5 => {
+            add_number_line(display, start, Line::Top);
+            add_number_line(display, start, Line::Bottom);
+            add_number_line(display, start, Line::Middle);
+            add_number_line(display, start, Line::BottomRight);
+            add_number_line(display, start, Line::TopLeft);
+        }
+        6 => {
+            add_number_line(display, start, Line::Top);
+            add_number_line(display, start, Line::Bottom);
+            add_number_line(display, start, Line::Middle);
+            add_number_line(display, start, Line::BottomRight);
+            add_number_line(display, start, Line::BottomLeft);
+            add_number_line(display, start, Line::TopLeft);
+        }
+        7 => {
+            add_number_line(display, start, Line::Top);
+
+            add_number_line(display, start, Line::BottomRight);
+            add_number_line(display, start, Line::TopRight);
         }
         8 => {
             add_number_line(display, start, Line::Top);
@@ -91,6 +140,13 @@ fn add_big_number(display: &mut [[char; 80]; 24], start: usize, digit: u32) {
             add_number_line(display, start, Line::BottomRight);
             add_number_line(display, start, Line::TopRight);
             add_number_line(display, start, Line::BottomLeft);
+            add_number_line(display, start, Line::TopLeft);
+        }
+        9 => {
+            add_number_line(display, start, Line::Top);
+            add_number_line(display, start, Line::Middle);
+            add_number_line(display, start, Line::BottomRight);
+            add_number_line(display, start, Line::TopRight);
             add_number_line(display, start, Line::TopLeft);
         }
         _ => todo!(),
@@ -109,13 +165,11 @@ fn display(term_clock: &[[char; 80]; 24]) {
 }
 
 fn update(term_clock: &mut [[char; 80]; 24]) {
-    let dt = Utc::now();
+    let dt = Local::now();
     let hour = dt.hour();
     let minutes = dt.minute();
 
-    if hour >= 10 {
-        add_big_number(term_clock, 1, hour / 10);
-    }
+    add_big_number(term_clock, 1, hour / 10);
     add_big_number(term_clock, 8, hour % 10);
 
     add_divider(term_clock);
@@ -129,5 +183,4 @@ fn main() {
 
     update(&mut term_clock);
     display(&term_clock);
-
 }
