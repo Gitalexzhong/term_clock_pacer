@@ -1,3 +1,5 @@
+use std::{thread::sleep, time::Duration};
+
 use chrono::{ Local, Timelike };
 
 enum Line {
@@ -180,8 +182,25 @@ fn update(term_clock: &mut [[char; 80]; 24]) {
 }
 
 fn main() {
+    // Initial display 
     let mut term_clock = [[' '; 80]; 24];
-
     update(&mut term_clock);
     display(&term_clock);
+
+    // Check time endlessly 
+    let mut last_minute = Local::now().minute();
+    loop {
+        sleep(Duration::from_millis(500));
+        let current_minute = Local::now().minute();
+        if current_minute != last_minute {
+
+            // On successful time change update display 
+            term_clock = [[' '; 80]; 24];
+            update(&mut term_clock);
+            display(&term_clock);
+
+            last_minute = current_minute;
+        }
+    }
+
 }
