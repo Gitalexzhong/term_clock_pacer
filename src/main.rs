@@ -1,3 +1,5 @@
+use chrono::{ Utc, Timelike };
+
 enum Line {
     Top,
     Middle,
@@ -69,13 +71,11 @@ fn add_number_line(display: &mut [[char; 80]; 24], start: usize, line: Line) {
     }
 }
 
-
 fn add_divider(display: &mut [[char; 80]; 24]) {
     display[2][16] = '█';
     display[4][16] = '█';
     display[2][17] = '█';
     display[4][17] = '█';
-
 }
 
 fn add_big_number(display: &mut [[char; 80]; 24], start: usize, digit: u32) {
@@ -108,16 +108,26 @@ fn display(term_clock: &[[char; 80]; 24]) {
     }
 }
 
+fn update(term_clock: &mut [[char; 80]; 24]) {
+    let dt = Utc::now();
+    let hour = dt.hour();
+    let minutes = dt.minute();
+
+    if hour >= 10 {
+        add_big_number(term_clock, 1, hour / 10);
+    }
+    add_big_number(term_clock, 8, hour % 10);
+
+    add_divider(term_clock);
+
+    add_big_number(term_clock, 20, minutes / 10);
+    add_big_number(term_clock, 27, minutes % 10);
+}
+
 fn main() {
     let mut term_clock = [[' '; 80]; 24];
 
-    add_big_number(&mut term_clock, 1, 8);
-    add_big_number(&mut term_clock, 8, 8);
-    add_divider(&mut term_clock);
-    add_big_number(&mut term_clock, 20, 8);
-    add_big_number(&mut term_clock, 27, 8);
-
-
+    update(&mut term_clock);
     display(&term_clock);
-    display(&term_clock);
+
 }
