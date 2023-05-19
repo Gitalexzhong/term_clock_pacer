@@ -1,4 +1,4 @@
-use std::{thread::sleep, time::Duration};
+use std::{ thread::sleep, time::Duration };
 
 use chrono::{ Local, Timelike };
 
@@ -156,6 +156,14 @@ fn add_big_number(display: &mut [[char; 80]; 24], start: usize, digit: u32) {
     }
 }
 
+fn add_date(display: &mut [[char; 80]; 24], date: String) {
+    let mut date_str = date.chars();
+
+    for i in 0..date.len() {
+        display[7][12+i] = date_str.next().unwrap();
+    }
+}
+
 fn display(term_clock: &[[char; 80]; 24]) {
     print!("{}[2J", 27 as char);
 
@@ -171,6 +179,7 @@ fn update(term_clock: &mut [[char; 80]; 24]) {
     let dt = Local::now();
     let hour = dt.hour();
     let minutes = dt.minute();
+    let date = dt.date_naive();
 
     add_big_number(term_clock, 1, hour / 10);
     add_big_number(term_clock, 8, hour % 10);
@@ -179,22 +188,23 @@ fn update(term_clock: &mut [[char; 80]; 24]) {
 
     add_big_number(term_clock, 20, minutes / 10);
     add_big_number(term_clock, 27, minutes % 10);
+
+    add_date(term_clock, date.to_string());
 }
 
 fn main() {
-    // Initial display 
+    // Initial display
     let mut term_clock = [[' '; 80]; 24];
     update(&mut term_clock);
     display(&term_clock);
 
-    // Check time endlessly 
+    // Check time endlessly
     let mut last_minute = Local::now().minute();
     loop {
         sleep(Duration::from_millis(500));
         let current_minute = Local::now().minute();
         if current_minute != last_minute {
-
-            // On successful time change update display 
+            // On successful time change update display
             term_clock = [[' '; 80]; 24];
             update(&mut term_clock);
             display(&term_clock);
@@ -202,5 +212,4 @@ fn main() {
             last_minute = current_minute;
         }
     }
-
 }
