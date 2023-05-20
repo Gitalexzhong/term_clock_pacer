@@ -1,6 +1,6 @@
 use std::{ thread::sleep, time::Duration };
 
-use chrono::{ Local, Timelike };
+use chrono::{ Local, Timelike, DateTime };
 
 enum Line {
     Top,
@@ -160,7 +160,7 @@ fn add_date(display: &mut [[char; 80]; 24], date: String) {
     let mut date_str = date.chars();
 
     for i in 0..date.len() {
-        display[7][12+i] = date_str.next().unwrap();
+        display[7][12 + i] = date_str.next().unwrap();
     }
 }
 
@@ -192,7 +192,16 @@ fn update(term_clock: &mut [[char; 80]; 24]) {
     add_date(term_clock, date.to_string());
 }
 
+struct ExamStatus {
+    start: DateTime<Local>,
+    duration_hour: u32,
+    duration_min: u32,
+}
+
 fn main() {
+    // Initial end and start times
+    let exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now() };
+
     // Initial display
     let mut term_clock = [[' '; 80]; 24];
     update(&mut term_clock);
