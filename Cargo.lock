@@ -51,6 +51,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "color-char"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b45ec4ec7e65299ee1e331564d792622934dd6a117d95078e479a2398f26e2f5"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "core-foundation-sys"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -147,6 +156,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde"
+version = "1.0.163"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2113ab51b87a539ae008b5c6c02dc020ffa39afd2d83cffcb3f4eb2722cebec2"
+
+[[package]]
 name = "syn"
 version = "2.0.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -162,6 +177,7 @@ name = "term_clock_pacer"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "color-char",
  "termcolor",
 ]
 

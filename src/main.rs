@@ -1,6 +1,6 @@
-use std::{ thread::sleep, time::Duration };
-
+use std::{ thread::sleep, time::Duration, io::stdout };
 use chrono::{ Local, Timelike, DateTime };
+use color_char::Character;
 
 enum Line {
     Top,
@@ -160,16 +160,16 @@ fn add_date(display: &mut [[char; 80]; 24], date: String) {
     let mut date_str = date.chars();
 
     for i in 0..date.len() {
-        display[7][12 + i] = date_str.next().unwrap();
+        display[7][12+i] = date_str.next().unwrap();
     }
 }
 
-fn display(term_clock: &[[char; 80]; 24]) {
+fn display(term_clock: &[[Character; 80]; 24]) {
     print!("{}[2J", 27 as char);
 
     for i in 0..24 {
         for j in 0..80 {
-            print!("\x1b[0;32m{}\x1b[0m", term_clock[i][j]);
+            print!("{}", term_clock[i][j]);
         }
         println!();
     }
@@ -180,6 +180,7 @@ fn update(term_clock: &mut [[char; 80]; 24]) {
     let hour = dt.hour();
     let minutes = dt.minute();
     let date = dt.date_naive();
+    let symbol: Character = Character::new('█', 25);
 
     add_big_number(term_clock, 1, hour / 10);
     add_big_number(term_clock, 8, hour % 10);
@@ -192,19 +193,19 @@ fn update(term_clock: &mut [[char; 80]; 24]) {
     add_date(term_clock, date.to_string());
 }
 
-struct ExamStatus {
+struct exam_status {
     start: DateTime<Local>,
     duration_hour: u32,
     duration_min: u32,
 }
 
 fn main() {
-    // Initial end and start times
-    let exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now() };
+    // Initial end and start times 
+    let exam = exam_status { duration_hour: 2, duration_min: 30, start: Local::now()};
 
     // Initial display
-    let mut term_clock = [[' '; 80]; 24];
-    update(&mut term_clock);
+    let mut term_clock = [[Character::default(); 80]; 24];
+    // update(&mut term_clock);
     display(&term_clock);
 
     // Check time endlessly
@@ -213,9 +214,10 @@ fn main() {
         sleep(Duration::from_millis(500));
         let current_minute = Local::now().minute();
         if current_minute != last_minute {
+            
             // On successful time change update display
-            term_clock = [[' '; 80]; 24];
-            update(&mut term_clock);
+            term_clock = [[Character::default(); 80]; 24];
+            // update(&mut term_clock);
             display(&term_clock);
 
             last_minute = current_minute;
