@@ -156,11 +156,11 @@ fn add_big_number(display: &mut [[char; 80]; 24], start: usize, digit: u32) {
     }
 }
 
-fn add_date(display: &mut [[char; 80]; 24], date: String) {
+fn add_date(display: &mut [[Character; 80]; 24], date: String, color_code: u32) {
     let mut date_str = date.chars();
 
     for i in 0..date.len() {
-        display[7][12+i] = date_str.next().unwrap();
+        display[7][12 + i] = Character::new(date_str.next().unwrap(), color_code);
     }
 }
 
@@ -169,28 +169,27 @@ fn display(term_clock: &[[Character; 80]; 24]) {
 
     for i in 0..24 {
         for j in 0..80 {
-            print!("{}", term_clock[i][j]);
+            print!("\x1b[0;{}m{}\x1b[0m", term_clock[i][j].get_color(), term_clock[i][j]);
         }
         println!();
     }
 }
 
-fn update(term_clock: &mut [[char; 80]; 24]) {
+fn update(term_clock: &mut [[Character; 80]; 24]) {
     let dt = Local::now();
     let hour = dt.hour();
     let minutes = dt.minute();
     let date = dt.date_naive();
-    let symbol: Character = Character::new('█', 25);
 
-    add_big_number(term_clock, 1, hour / 10);
-    add_big_number(term_clock, 8, hour % 10);
+    // add_big_number(term_clock, 1, hour / 10);
+    // add_big_number(term_clock, 8, hour % 10);
 
-    add_divider(term_clock);
+    // add_divider(term_clock);
 
-    add_big_number(term_clock, 20, minutes / 10);
-    add_big_number(term_clock, 27, minutes % 10);
+    // add_big_number(term_clock, 20, minutes / 10);
+    // add_big_number(term_clock, 27, minutes % 10);
 
-    add_date(term_clock, date.to_string());
+    add_date(term_clock, date.to_string(), 32);
 }
 
 struct exam_status {
@@ -200,27 +199,26 @@ struct exam_status {
 }
 
 fn main() {
-    // Initial end and start times 
-    let exam = exam_status { duration_hour: 2, duration_min: 30, start: Local::now()};
+    // Initial end and start times
+    let exam = exam_status { duration_hour: 2, duration_min: 30, start: Local::now() };
 
     // Initial display
-    let mut term_clock = [[Character::default(); 80]; 24];
-    // update(&mut term_clock);
+    let mut term_clock = [[Character::new('1', 26); 80]; 24];
+    update(&mut term_clock);
     display(&term_clock);
 
     // Check time endlessly
-    let mut last_minute = Local::now().minute();
-    loop {
-        sleep(Duration::from_millis(500));
-        let current_minute = Local::now().minute();
-        if current_minute != last_minute {
-            
-            // On successful time change update display
-            term_clock = [[Character::default(); 80]; 24];
-            // update(&mut term_clock);
-            display(&term_clock);
+    // let mut last_minute = Local::now().minute();
+    // loop {
+    //     sleep(Duration::from_millis(500));
+    //     let current_minute = Local::now().minute();
+    //     if current_minute != last_minute {
+    //         // On successful time change update display
+    //         term_clock = [[Character::default(); 80]; 24];
+    //         update(&mut term_clock);
+    //         display(&term_clock);
 
-            last_minute = current_minute;
-        }
-    }
+    //         last_minute = current_minute;
+    //     }
+    // }
 }
