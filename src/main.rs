@@ -175,7 +175,7 @@ fn display(term_clock: &[[Character; 80]; 24]) {
     }
 }
 
-fn update(term_clock: &mut [[Character; 80]; 24]) {
+fn update_time(term_clock: &mut [[Character; 80]; 24]) {
     let dt = Local::now();
     let hour = dt.hour();
     let minutes = dt.minute();
@@ -193,6 +193,10 @@ fn update(term_clock: &mut [[Character; 80]; 24]) {
     add_date(term_clock, date.to_string(), clock_color);
 }
 
+fn update_exam_time(term_clock: &mut [[Character; 80]; 24], exam: &mut exam_status) {
+    
+}
+
 struct exam_status {
     start: DateTime<Local>,
     duration_hour: u32,
@@ -201,11 +205,12 @@ struct exam_status {
 
 fn main() {
     // Initial end and start times
-    let exam = exam_status { duration_hour: 2, duration_min: 30, start: Local::now() };
+    let mut exam = exam_status { duration_hour: 2, duration_min: 30, start: Local::now() };
 
     // Initial display
     let mut term_clock = [[Character::default(); 80]; 24];
-    update(&mut term_clock);
+    update_time(&mut term_clock);
+    update_exam_time(&mut term_clock, &mut exam);
     display(&term_clock);
 
     // Check time endlessly
@@ -216,7 +221,9 @@ fn main() {
         if current_minute != last_minute {
             // On successful time change update display
             term_clock = [[Character::default(); 80]; 24];
-            update(&mut term_clock);
+            update_time(&mut term_clock);
+            update_exam_time(&mut term_clock, &mut exam);
+
             display(&term_clock);
 
             last_minute = current_minute;
