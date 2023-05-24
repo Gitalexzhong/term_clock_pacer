@@ -19,7 +19,7 @@ pub(crate) fn update_exam_time(term_clock: &mut [[Character; 80]; 24], exam: &mu
 
     // Display end time
     let end_time = exam.start + Duration::hours(exam.duration_hour) + Duration::minutes(exam.duration_min);
-    let mut end_time = end_time.hour().to_string() + ":" + &end_time.minute().to_string();
+    let mut end_time = end_time.hour().to_string() + ":" + &end_time.minute().to_string() + ":" + &end_time.second().to_string();
     for i in 0..end_time.len() {
         term_clock[9][32 - i] = Character::new(end_time.pop().unwrap(), exam_time_color);
     }
