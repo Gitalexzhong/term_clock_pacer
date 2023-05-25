@@ -1,12 +1,12 @@
 use std::{ thread::sleep, time::Duration };
-use chrono::{ Local, Timelike};
+use chrono::{ Local, Timelike };
 use color_char::Character;
 
 mod clock;
 use clock::update_time;
 
 mod exam_timer;
-use exam_timer::{ExamStatus, update_exam_time};
+use exam_timer::{ ExamStatus, update_exam_time };
 
 fn display(term_clock: &[[Character; 80]; 24]) {
     print!("{}[2J", 27 as char);
@@ -30,19 +30,16 @@ fn main() {
     display(&term_clock);
 
     // Check time endlessly
-    let mut last_minute = Local::now().minute();
     loop {
-        sleep(Duration::from_millis(500));
-        let current_minute = Local::now().minute();
-        if current_minute != last_minute {
-            // On successful time change update display
-            term_clock = [[Character::default(); 80]; 24];
-            update_time(&mut term_clock);
-            update_exam_time(&mut term_clock, &mut exam);
+        // Update time every second 
+        sleep(Duration::from_millis(1000));
 
-            display(&term_clock);
+        // change and update display
+        term_clock = [[Character::default(); 80]; 24];
+        update_time(&mut term_clock);
+        update_exam_time(&mut term_clock, &mut exam);
 
-            last_minute = current_minute;
-        }
+        display(&term_clock);
+        
     }
 }
