@@ -13,7 +13,8 @@ fn add_start_end_duration(
     color: u32
 ) {
     // Calculate start time
-    let start_time = exam.start.hour().to_string() + ":" + &exam.start.minute().to_string();
+    let start_time = exam.start;
+    let start_time_str = start_time.hour().to_string() + ":" + &start_time.minute().to_string();
 
     // Calculate end time
     let end_time =
@@ -26,13 +27,20 @@ fn add_start_end_duration(
         &end_time.second().to_string();
 
     // Combined statement
-    let mut duration_time = start_time + " - " + &end_time_str;
+    let mut duration_time = start_time_str + " - " + &end_time_str;
     for i in 0..duration_time.len() {
         term_clock[9][i + 1] = Character::new(duration_time.remove(0), color);
     }
 
-    let a = exam.start;
-    
+    // Calculate remaining time
+    if  Local::now() <=  start_time  +  Duration::minutes(1) {
+        term_clock[10][1] = Character::new('B', color);
+    } else if Local::now() <= end_time {
+        term_clock[10][1] = Character::new('I', color);
+    } else {
+        term_clock[10][1] = Character::new('A', color);
+    }
+    // term_clock[10][1] = Character::new('L', color);
     // for i in 0..end_time.len() {
     //     term_clock[9][32 - i] = Character::new(end_time.pop().unwrap(), color);
     // }
