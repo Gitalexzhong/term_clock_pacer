@@ -37,8 +37,7 @@ fn add_start_end_duration(
     let mut remaining_time_str;
     let mut counter_colour;
     if Local::now() < start_time + Duration::minutes(1) {
-        // term_clock[10][1] = Character::new('B', color);
-
+        // TODO remove min added for testing
         let time_left = Local::now() - Duration::minutes(1) - start_time;
         remaining_time_str =
             "-".to_string() +
@@ -47,12 +46,16 @@ fn add_start_end_duration(
             &(time_left.num_seconds().abs() % 60).to_string();
         counter_colour = 34;
     } else if Local::now() <= end_time {
-        term_clock[10][1] = Character::new('I', color);
         remaining_time_str = "I".to_string();
         counter_colour = 32;
     } else {
-        term_clock[10][1] = Character::new('A', color);
-        remaining_time_str = "A".to_string();
+        let time_left = Local::now() - end_time;
+        remaining_time_str =
+            "+".to_string() +
+            &time_left.num_minutes().abs().to_string() +
+            ":" +
+            &(time_left.num_seconds().abs() % 60).to_string();
+
         counter_colour = 31;
     }
 
