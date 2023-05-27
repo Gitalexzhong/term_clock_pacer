@@ -46,7 +46,13 @@ fn add_start_end_duration(
             &(time_left.num_seconds().abs() % 60).to_string();
         counter_colour = 34;
     } else if Local::now() <= end_time {
-        remaining_time_str = "I".to_string();
+        let time_left = end_time - Local::now();
+        remaining_time_str =
+            
+            time_left.num_minutes().abs().to_string() +
+            ":" +
+            &(time_left.num_seconds().abs() % 60).to_string();
+
         counter_colour = 32;
     } else {
         let time_left = Local::now() - end_time;
