@@ -7,7 +7,7 @@ pub(crate) struct ExamStatus {
     pub(crate) duration_min: i64,
 }
 
-fn display_status_bar(term_clock: &mut [[Character; 80]; 24], percent: f64) {
+fn display_status_bar(term_clock: &mut [[Character; 80]; 24], mut percent: f64) {
     if percent <= 0.0 {
         term_clock[10][1] = Character::new('w', 34);
         term_clock[10][2] = Character::new('a', 34);
@@ -21,8 +21,34 @@ fn display_status_bar(term_clock: &mut [[Character; 80]; 24], percent: f64) {
         return;
     }
 
-    
-    term_clock[10][1] = Character::new('|', 32);
+    let mut index = 1;
+
+    while percent > 0.0 {
+        if percent >= 0.03125 {
+            term_clock[10][index] = Character::new('█', 32);
+            percent -= 0.03125;
+        } else {
+            // it is the last block so we return a partial fill block
+
+            match percent {
+                p if p <= 0.00390625 => term_clock[10][index] = Character::new('▏', 32),
+                p if p <= 0.0078125 => term_clock[10][index] = Character::new('▎', 32),
+                p if p <= 0.01171875 => term_clock[10][index] = Character::new('▍', 32),
+                p if p <= 0.015625 => term_clock[10][index] = Character::new('▌', 32),
+                p if p <= 0.01953125 => term_clock[10][index] = Character::new('▊', 32),
+                p if p <= 0.0234375 => term_clock[10][index] = Character::new('▊', 32),
+                p if p <= 0.02734375 => term_clock[10][index] = Character::new('▉', 32),
+                _ => {}
+            }
+        }
+
+        index += 1;
+
+        // Check out of bounce and return finished major state
+        if index == 33 && percent >= 0.0 {
+            break;
+        }
+    }
 }
 
 fn add_start_end_duration(
@@ -64,11 +90,9 @@ fn add_start_end_duration(
             &(time_left.num_seconds().abs() % 60).to_string();
         counter_colour = 34;
         display_status_bar(&mut term_clock, -1.0);
-
     } else if Local::now() <= end_time {
         let time_left = end_time - Local::now();
         remaining_time_str =
-            
             time_left.num_minutes().abs().to_string() +
             ":" +
             &(time_left.num_seconds().abs() % 60).to_string();
