@@ -29,7 +29,6 @@ fn display_status_bar(term_clock: &mut [[Character; 80]; 24], mut percent: f64) 
             percent -= 0.03125;
         } else {
             // it is the last block so we return a partial fill block
-
             match percent {
                 p if p <= 0.00390625 => term_clock[10][index] = Character::new('▏', 32),
                 p if p <= 0.0078125 => term_clock[10][index] = Character::new('▎', 32),
@@ -46,6 +45,7 @@ fn display_status_bar(term_clock: &mut [[Character; 80]; 24], mut percent: f64) 
 
         // Check out of bounce and return finished major state
         if index == 33 && percent >= 0.0 {
+            // TODO change all char color to over max time 
             break;
         }
     }
@@ -80,7 +80,8 @@ fn add_start_end_duration(
     // TODO remove min added for testing
     let mut remaining_time_str;
     let counter_colour;
-    if Local::now() < start_time + Duration::minutes(1) {
+    if Local::now() < start_time  {
+    // if Local::now() < start_time + Duration::minutes(1) {
         // TODO remove min added for testing
         let time_left = Local::now() - Duration::minutes(1) - start_time;
         remaining_time_str =
