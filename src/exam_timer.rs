@@ -7,8 +7,26 @@ pub(crate) struct ExamStatus {
     pub(crate) duration_min: i64,
 }
 
+fn display_status_bar(term_clock: &mut [[Character; 80]; 24], percent: f64) {
+    if percent <= 0.0 {
+        term_clock[10][1] = Character::new('w', 34);
+        term_clock[10][2] = Character::new('a', 34);
+        term_clock[10][3] = Character::new('i', 34);
+        term_clock[10][4] = Character::new('t', 34);
+        term_clock[10][28] = Character::new('^', 34);
+        term_clock[10][29] = Character::new('^', 34);
+        term_clock[10][30] = Character::new('^', 34);
+        term_clock[10][31] = Character::new('^', 34);
+        term_clock[10][32] = Character::new('^', 34);
+        return;
+    }
+
+    
+    term_clock[10][1] = Character::new('|', 32);
+}
+
 fn add_start_end_duration(
-    term_clock: &mut [[Character; 80]; 24],
+    mut term_clock: &mut [[Character; 80]; 24],
     exam: &mut ExamStatus,
     color: u32
 ) {
@@ -45,6 +63,8 @@ fn add_start_end_duration(
             ":" +
             &(time_left.num_seconds().abs() % 60).to_string();
         counter_colour = 34;
+        display_status_bar(&mut term_clock, -1.0);
+
     } else if Local::now() <= end_time {
         let time_left = end_time - Local::now();
         remaining_time_str =
@@ -54,6 +74,7 @@ fn add_start_end_duration(
             &(time_left.num_seconds().abs() % 60).to_string();
 
         counter_colour = 32;
+        display_status_bar(&mut term_clock, 1.0);
     } else {
         let time_left = Local::now() - end_time;
         remaining_time_str =
