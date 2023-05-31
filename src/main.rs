@@ -36,7 +36,8 @@ fn display(term_clock: &[[Character; 80]; 24], stdout: &mut Stdout) -> Result<()
 
 fn main() -> Result<()> {
     // Initial end and start times
-    let mut exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now() };
+    // let mut exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now() };
+    let mut exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now()};
     let mut stdout = stdout(); // lock stdout and use the same locked instance throughout
 
     // Initial display

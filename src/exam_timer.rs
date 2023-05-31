@@ -77,13 +77,10 @@ fn add_start_end_duration(
     }
 
     // Calculate remaining time
-    // TODO remove min added for testing
     let mut remaining_time_str;
     let counter_colour;
     if Local::now() < start_time  {
-    // if Local::now() < start_time + Duration::minutes(1) {
-        // TODO remove min added for testing
-        let time_left = Local::now() - Duration::minutes(1) - start_time;
+        let time_left = Local::now() - start_time;
         remaining_time_str =
             "-".to_string() +
             &time_left.num_minutes().abs().to_string() +
