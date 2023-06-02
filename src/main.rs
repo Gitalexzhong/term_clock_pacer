@@ -15,7 +15,12 @@ use clock::update_time;
 mod exam_timer;
 use exam_timer::{ ExamStatus, update_exam_time };
 
-fn display(term_clock: &[[Character; 80]; 24], stdout: &mut Stdout, force: bool) -> Result<()> {
+fn clear_display() {
+    print!("{}[2J", 27 as char);
+
+}
+
+fn display(term_clock: &[[Character; 80]; 24], stdout: &mut Stdout) -> Result<()> {
     let mut stdout_all = "".to_string();
     for i in 0..24 {
     // for i in 0..12 {
@@ -23,7 +28,7 @@ fn display(term_clock: &[[Character; 80]; 24], stdout: &mut Stdout, force: bool)
         for j in 0..80 {
             // write!(stdout, "\x1b[0;{}m{}\x1b[0m", term_clock[i][j].get_color(), term_clock[i][j])?;
             // stdout_all += &format!("\x1b[0;{}m{}\x1b[0m", term_clock[i][j].get_color(), term_clock[i][j]);
-            if term_clock[i][j] != Character::default() || force {
+            if term_clock[i][j] != Character::default() {
                 queue!(stdout, cursor::MoveTo(j as u16, i as u16), Print(format!("\x1b[0;{}m{}\x1b[0m", term_clock[i][j].get_color(), term_clock[i][j])))?;
             }
 
@@ -45,10 +50,11 @@ fn display(term_clock: &[[Character; 80]; 24], stdout: &mut Stdout, force: bool)
 }
 
 fn init_display(term_clock: &mut [[Character; 80]; 24], stdout: &mut Stdout, exam: &mut ExamStatus) -> Result<()> {
-    
+    clear_display();
+
     update_time(term_clock);
     update_exam_time(term_clock, exam);
-    display(&term_clock, stdout, true)?;
+    display(&term_clock, stdout)?;
 
     Ok(())
 }
@@ -73,7 +79,7 @@ fn main() -> Result<()> {
         update_time(&mut term_clock);
         update_exam_time(&mut term_clock, &mut exam);
 
-        display(&term_clock, &mut stdout, false)?;
+        display(&term_clock, &mut stdout)?;
     }
 }
 
