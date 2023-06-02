@@ -21,7 +21,7 @@ fn clear_display() {
 }
 
 fn display(term_clock: &[[Character; 80]; 24], stdout: &mut Stdout) -> Result<()> {
-    let mut stdout_all = "".to_string();
+    // let mut stdout_all = "".to_string();
     for i in 0..24 {
     // for i in 0..12 {
         // for j in 0..40 {
