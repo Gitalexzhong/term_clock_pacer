@@ -7,7 +7,7 @@ use crossterm::{
     ExecutableCommand,
     QueueableCommand,
     terminal,
-    cursor,
+    cursor::{self, Hide},
     style::{ self, Stylize, Print },
     Result,
     queue,
@@ -49,6 +49,7 @@ fn display(
 
     prev_term_clock.clone_from(term_clock);
     stdout.flush()?;
+    execute!(stdout, Hide)?;
 
     Ok(())
 }
@@ -71,7 +72,7 @@ fn init_display(
 fn main() -> Result<()> {
     // Initial end and start times
     // let mut exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now() };
-    let mut exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now() };
+    let mut exam = ExamStatus { duration_hour: 0, duration_min: 1, start: Local::now() };
     let mut stdout = stdout(); // lock stdout and use the same locked instance throughout
 
     // Initial display
