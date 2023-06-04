@@ -3,16 +3,8 @@ use chrono::{ Local };
 use color_char::Character;
 
 use std::io::{ stdout, Write };
-use crossterm::{
-    ExecutableCommand,
-    QueueableCommand,
-    terminal,
-    cursor::{self, Hide},
-    style::{ self, Stylize, Print },
-    Result,
-    queue,
-};
-use crossterm::{ execute, terminal::{ EnterAlternateScreen, LeaveAlternateScreen } };
+use crossterm::{ cursor::{ self, Hide }, style::Print, Result, queue };
+use crossterm::execute;
 
 mod clock;
 use clock::update_time;
@@ -20,15 +12,14 @@ use clock::update_time;
 mod exam_timer;
 use exam_timer::{ ExamStatus, update_exam_time };
 
+mod type_defines;
+use type_defines::StdTerm;
+
 fn clear_display() {
     print!("{}[2J", 27 as char);
 }
 
-fn display(
-    prev_term_clock: &mut [[Character; 80]; 24],
-    term_clock: &[[Character; 80]; 24],
-    stdout: &mut Stdout
-) -> Result<()> {
+fn display(prev_term_clock: &mut StdTerm, term_clock: &StdTerm, stdout: &mut Stdout) -> Result<()> {
     for i in 0..24 {
         for j in 0..80 {
             if term_clock[i][j] != prev_term_clock[i][j] {
@@ -55,8 +46,8 @@ fn display(
 }
 
 fn init_display(
-    prev_term_clock: &mut [[Character; 80]; 24],
-    term_clock: &mut [[Character; 80]; 24],
+    prev_term_clock: &mut StdTerm,
+    term_clock: &mut StdTerm,
     stdout: &mut Stdout,
     exam: &mut ExamStatus
 ) -> Result<()> {
