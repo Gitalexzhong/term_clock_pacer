@@ -39,6 +39,7 @@ fn display_status_bar(term_clock: &mut [[Character; 80]; 24], mut percent: f64) 
                 p if p <= 0.02734375 => term_clock[10][index] = Character::new('▉', 32),
                 _ => {}
             }
+            break;
         }
 
         index += 1;
@@ -90,13 +91,16 @@ fn add_start_end_duration(
         display_status_bar(&mut term_clock, -1.0);
     } else if Local::now() <= end_time {
         let time_left = end_time - Local::now();
+        let duration = end_time - start_time;
         remaining_time_str =
             time_left.num_minutes().abs().to_string() +
             ":" +
             &(time_left.num_seconds().abs() % 60).to_string();
 
         counter_colour = 32;
-        display_status_bar(&mut term_clock, 1.0);
+
+        let percent = ((duration - time_left).num_seconds() as f64)/(duration.num_seconds() as f64);
+        display_status_bar(&mut term_clock, percent as f64);
     } else {
         let time_left = Local::now() - end_time;
         remaining_time_str =
