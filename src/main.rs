@@ -15,6 +15,11 @@ use exam_timer::{ ExamStatus, update_exam_time };
 mod type_defines;
 use type_defines::StdTerm;
 
+struct DisplayOptions {
+    timer: bool,
+
+}
+
 fn clear_display() {
     print!("{}[2J", 27 as char);
 }
@@ -49,12 +54,16 @@ fn init_display(
     prev_term_clock: &mut StdTerm,
     term_clock: &mut StdTerm,
     stdout: &mut Stdout,
-    exam: &mut ExamStatus
+    exam: &mut ExamStatus,
+    options: &DisplayOptions,
 ) -> Result<()> {
     clear_display();
 
     update_time(term_clock);
-    update_exam_time(term_clock, exam);
+    if options.timer {
+        update_exam_time(term_clock, exam);
+    }
+
     display(prev_term_clock, &term_clock, stdout)?;
 
     Ok(())
@@ -64,12 +73,15 @@ fn main() -> Result<()> {
     // Initial end and start times
     // let mut exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now() };
     let mut exam = ExamStatus { duration_hour: 0, duration_min: 1, start: Local::now() };
+
+    let display_options = DisplayOptions { timer: true };
+
     let mut stdout = stdout(); // lock stdout and use the same locked instance throughout
 
     // Initial display
     let mut term_clock = [[Character::default(); 80]; 24];
     let mut prev_term_clock = [[Character::default(); 80]; 24];
-    init_display(&mut prev_term_clock, &mut term_clock, &mut stdout, &mut exam)?;
+    init_display(&mut prev_term_clock, &mut term_clock, &mut stdout, &mut exam, &display_options)?;
 
     // Check time endlessly
     loop {
@@ -79,7 +91,9 @@ fn main() -> Result<()> {
         // change and update display
         term_clock = [[Character::default(); 80]; 24];
         update_time(&mut term_clock);
-        update_exam_time(&mut term_clock, &mut exam);
+        if display_options.timer {
+            update_exam_time(&mut term_clock, &mut exam);
+        }
 
         display(&mut prev_term_clock, &term_clock, &mut stdout)?;
     }
