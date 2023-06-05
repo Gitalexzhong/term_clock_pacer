@@ -1,6 +1,8 @@
 use chrono::{ Local, Timelike };
 use color_char::Character;
 
+use crate::{ type_defines::StdTerm };
+
 enum Line {
     Top,
     Middle,
@@ -11,7 +13,7 @@ enum Line {
     BottomRight,
 }
 
-fn add_number_line(display: &mut [[Character; 80]; 24], start: usize, line: Line, color_code: u32) {
+fn add_number_line(display: &mut StdTerm, start: usize, line: Line, color_code: u32) {
     match line {
         Line::Top => {
             display[1][start] = Character::new('█', color_code);
@@ -72,14 +74,14 @@ fn add_number_line(display: &mut [[Character; 80]; 24], start: usize, line: Line
     }
 }
 
-fn add_divider(display: &mut [[Character; 80]; 24], color_code: u32) {
+fn add_divider(display: &mut StdTerm, color_code: u32) {
     display[2][16] = Character::new('█', color_code);
     display[4][16] = Character::new('█', color_code);
     display[2][17] = Character::new('█', color_code);
     display[4][17] = Character::new('█', color_code);
 }
 
-fn add_big_number(display: &mut [[Character; 80]; 24], start: usize, digit: u32, color_code: u32) {
+fn add_big_number(display: &mut StdTerm, start: usize, digit: u32, color_code: u32) {
     match digit {
         0 => {
             add_number_line(display, start, Line::Top, color_code);
@@ -155,7 +157,7 @@ fn add_big_number(display: &mut [[Character; 80]; 24], start: usize, digit: u32,
     }
 }
 
-fn add_date(display: &mut [[Character; 80]; 24], date: String, color_code: u32) {
+fn add_date(display: &mut StdTerm, date: String, color_code: u32) {
     let mut date_str = date.chars();
 
     for i in 0..date.len() {
@@ -163,7 +165,7 @@ fn add_date(display: &mut [[Character; 80]; 24], date: String, color_code: u32) 
     }
 }
 
-pub(crate) fn update_time(term_clock: &mut [[Character; 80]; 24]) {
+pub(crate) fn update_time(term_clock: &mut StdTerm) {
     let dt = Local::now();
     let hour = dt.hour();
     let minutes = dt.minute();

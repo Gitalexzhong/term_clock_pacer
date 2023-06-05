@@ -1,13 +1,15 @@
 use color_char::Character;
 use chrono::{ Local, Timelike, DateTime, Duration };
 
+use crate::{ type_defines::StdTerm };
+
 pub(crate) struct ExamStatus {
     pub(crate) start: DateTime<Local>,
     pub(crate) duration_hour: i64,
     pub(crate) duration_min: i64,
 }
 
-fn display_status_bar(term_clock: &mut [[Character; 80]; 24], mut percent: f64) {
+fn display_status_bar(term_clock: &mut StdTerm, mut percent: f64) {
     if percent <= 0.0 {
         term_clock[10][1] = Character::new('w', 34);
         term_clock[10][2] = Character::new('a', 34);
@@ -53,7 +55,7 @@ fn display_status_bar(term_clock: &mut [[Character; 80]; 24], mut percent: f64) 
 }
 
 fn add_start_end_duration(
-    mut term_clock: &mut [[Character; 80]; 24],
+    mut term_clock: &mut StdTerm,
     exam: &mut ExamStatus,
     color: u32
 ) {
@@ -118,7 +120,7 @@ fn add_start_end_duration(
     }
 }
 
-pub(crate) fn update_exam_time(term_clock: &mut [[Character; 80]; 24], exam: &mut ExamStatus) {
+pub(crate) fn update_exam_time(term_clock: &mut StdTerm, exam: &mut ExamStatus) {
     let exam_time_color = 32;
 
     add_start_end_duration(term_clock, exam, exam_time_color);
