@@ -1,4 +1,4 @@
-use std::{ thread::sleep, time::Duration, io::Stdout };
+use std::{ thread::sleep, time::Duration, io::Stdout, env };
 use chrono::{ Local };
 use color_char::Character;
 
@@ -72,6 +72,9 @@ fn init_display(
 fn main() -> Result<()> {
     // Initial end and start times
     // let mut exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now() };
+
+    let args: Vec<String> = env::args().collect();
+    
     let mut exam = ExamStatus { duration_hour: 0, duration_min: 1, start: Local::now() };
 
     let display_options = DisplayOptions { timer: true };
