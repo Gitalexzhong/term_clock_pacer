@@ -17,7 +17,6 @@ use type_defines::StdTerm;
 
 struct DisplayOptions {
     timer: bool,
-
 }
 
 fn clear_display() {
@@ -55,7 +54,7 @@ fn init_display(
     term_clock: &mut StdTerm,
     stdout: &mut Stdout,
     exam: &mut ExamStatus,
-    options: &DisplayOptions,
+    options: &DisplayOptions
 ) -> Result<()> {
     clear_display();
 
@@ -74,10 +73,29 @@ fn main() -> Result<()> {
     // let mut exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now() };
 
     let args: Vec<String> = env::args().collect();
-    
+    let display_options;
     let mut exam = ExamStatus { duration_hour: 0, duration_min: 1, start: Local::now() };
 
-    let display_options = DisplayOptions { timer: true };
+    if args.len() == 1 {
+        display_options = DisplayOptions { timer: false };
+    } else if args.len() == 2 {
+        // Option to have current time as basis of exam start time.
+        display_options = DisplayOptions { timer: true };
+        let mins_str = args.get(1).unwrap().to_owned();
+        let mins = mins_str.parse::<i64>();
+
+        match mins {
+            Ok(time) => {
+                exam = ExamStatus { duration_hour: time/60, duration_min: time%60, start: Local::now() };
+            }
+            Err(e) => {
+                return Ok(());
+            }
+        }
+    } else {
+        // Required error checking
+        return Ok(());
+    }
 
     let mut stdout = stdout(); // lock stdout and use the same locked instance throughout
 
