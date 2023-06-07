@@ -39,6 +39,7 @@ fn display_status_bar(term_clock: &mut StdTerm, mut percent: f64) {
                 p if p <= 0.01953125 => term_clock[10][index] = Character::new('▊', 32),
                 p if p <= 0.0234375 => term_clock[10][index] = Character::new('▊', 32),
                 p if p <= 0.02734375 => term_clock[10][index] = Character::new('▉', 32),
+                p if p <= 0.03125 => term_clock[10][index] = Character::new('█', 32),
                 _ => {}
             }
             break;
