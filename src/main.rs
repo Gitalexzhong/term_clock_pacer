@@ -1,5 +1,6 @@
 use std::{ thread::sleep, time::Duration, io::Stdout, env };
-use chrono::{ Local };
+use chrono::{ Local, Duration as Dur };
+// use chrono::{DateTime, Local, Duration};
 use color_char::Character;
 
 use std::io::{ stdout, Write };
@@ -74,10 +75,12 @@ fn main() -> Result<()> {
 
     let args: Vec<String> = env::args().collect();
     let display_options;
-    let mut exam = ExamStatus { duration_hour: 0, duration_min: 1, start: Local::now() };
+    let mut exam;
+    // let mut exam = ExamStatus { duration_hour: 0, duration_min: 1, start: Local::now()};
 
     if args.len() == 1 {
         display_options = DisplayOptions { timer: false };
+        exam = ExamStatus { duration_hour: 0, duration_min: 0, start: Local::now()};
     } else if args.len() == 2 {
         // Option to have current time as basis of exam start time.
         display_options = DisplayOptions { timer: true };
@@ -86,7 +89,7 @@ fn main() -> Result<()> {
 
         match mins {
             Ok(time) => {
-                exam = ExamStatus { duration_hour: time/60, duration_min: time%60, start: Local::now() };
+                exam = ExamStatus { duration_hour: time/60, duration_min: time%60, start: Local::now() + Dur::minutes(1)};
             }
             Err(e) => {
                 return Ok(());
