@@ -6,6 +6,7 @@ use color_char::Character;
 use std::io::{ stdout, Write };
 use crossterm::{ cursor::{ self, Hide }, style::Print, Result, queue };
 use crossterm::execute;
+use crossterm::event::{read, Event, KeyCode};
 
 mod clock;
 use clock::update_time;
@@ -72,6 +73,21 @@ fn init_display(
 fn main() -> Result<()> {
     // Initial end and start times
     // let mut exam = ExamStatus { duration_hour: 2, duration_min: 30, start: Local::now() };
+
+    loop {
+        match read().unwrap() {
+            Event::Key(event) => match event.code {
+                KeyCode::Char(c) => println!("char typed: {}", c),
+                KeyCode::Enter => println!("enter key pressed"),
+                KeyCode::Esc => println!("esc key pressed"),
+                _ => {}
+            },
+            Event::Mouse(event) => println!("{:?}", event),
+            _ => {print!(".");}
+        }
+    }
+
+    return Ok(()); 
 
     let args: Vec<String> = env::args().collect();
     let display_options;
